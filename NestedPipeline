@@ -1,0 +1,29 @@
+pipeline {
+    agent none
+
+    parameters {
+        choice(choices: 'None\nsimple-node-js-react-npm-app\nsimple-java-maven-app',
+        description: 'Build project?', name: 'userFlag')
+        //booleanParam(name: 'userFlag', defaultValue: false, description: 'Deploy Application?') 
+    }
+
+    stages {
+        stage('simple-node-js-react-npm-app') {
+          when {
+                    expression { params.userFlag == 'simple-node-js-react-npm-app' }
+                }
+          steps {
+              // build job: '<Project name>', parameters: [[$class: 'StringParameterValue', name: 'param1', value: 'test_param']]
+              build job:'simple-node-js-react-npm-app/master', propagate: true, wait: true
+          }
+        }
+        stage('simple-java-maven-app') {
+          when {
+                    expression { params.userFlag == 'simple-java-maven-app' }
+                }
+          steps {
+              build job: 'simple-java-maven-app/master', propagate: true, wait: true
+          }
+        }
+    }
+}
